@@ -1,0 +1,11 @@
+{
+  "name": "@yaakapp/cli-linux-arm64",
+  "version": "0.0.38",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yaakapp/cli.git"
+  },
+  "os": [
+    "darwin"
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "name": "@yaakapp/cli-linux-x64",
+  "name": "@yaakapp/cli-linux-arm64",
   "version": "0.0.38",
   "repository": {
     "type": "git",
@@ -9,6 +9,6 @@
     "linux"
   ],
   "cpu": [
-    "x64"
+    "arm64"
   ]
 }

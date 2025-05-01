@@ -15,6 +15,7 @@
   "optionalDependencies": {
     "@yaakapp/cli-darwin-x64": "0.0.38",
     "@yaakapp/cli-darwin-arm64": "0.0.38",
+    "@yaakapp/cli-linux-arm64": "0.0.38",
     "@yaakapp/cli-linux-x64": "0.0.38",
     "@yaakapp/cli-win32-x64": "0.0.38"
   }

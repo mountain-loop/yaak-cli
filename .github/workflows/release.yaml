@@ -46,6 +46,11 @@ jobs:
         working-directory: npm/cli-darwin-x64
         env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }
 
+      - name: Publish @yaakapp/cli-linux-arm64
+        run: npm publish --provenance --access public
+        working-directory: npm/cli-linux-arm64
+        env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }
+
       - name: Publish @yaakapp/cli-linux-x64
         run: npm publish --provenance --access public
         working-directory: npm/cli-linux-x64

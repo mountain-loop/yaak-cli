@@ -4,7 +4,7 @@
   "main": "./index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yaakapp/cli.git"
+    "url": "git+https://github.com/mountain-loop/yaak-cli.git"
   },
   "scripts": {
     "postinstall": "node ./install.js"

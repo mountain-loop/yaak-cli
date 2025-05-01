@@ -3,7 +3,7 @@
   "version": "0.0.38",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yaakapp/cli.git"
+    "url": "git+https://github.com/mountain-loop/yaak-cli.git"
   },
   "os": [
     "win32"

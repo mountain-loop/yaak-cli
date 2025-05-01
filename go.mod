@@ -1,4 +1,4 @@
-module github.com/yaakapp/cli
+module github.com/mountain-loop/yaak-cli
 
 go 1.22
 

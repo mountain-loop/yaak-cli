@@ -2,13 +2,13 @@ package yaakcli
 
 import (
 	"os"
-	"path/filepath"
+	"path"
 	"strings"
 )
 
-func writeFile(path, contents string) {
-	CheckError(os.MkdirAll(filepath.Dir(path), 0755))
-	CheckError(os.WriteFile(path, []byte(contents), 0755))
+func writeFile(writePath, contents string) {
+	CheckError(os.MkdirAll(path.Dir(writePath), 0755))
+	CheckError(os.WriteFile(writePath, []byte(contents), 0755))
 }
 
 func readFile(path string) string {
@@ -18,9 +18,9 @@ func readFile(path string) string {
 }
 
 func copyFile(relPath, dstDir, name string) {
-	contents := readFile(filepath.Join("template", relPath))
+	contents := readFile(path.Join("template", relPath))
 	contents = strings.ReplaceAll(contents, "yaak-plugin-name", name)
-	writeFile(filepath.Join(dstDir, relPath), contents)
+	writeFile(path.Join(dstDir, relPath), contents)
 }
 
 func fileExists(path string) bool {

@@ -1,22 +1,21 @@
 package yaakcli
 
 import (
-	"github.com/pterm/pterm"
-	"github.com/spf13/cobra"
 	"os"
 	"os/exec"
+
+	"github.com/pterm/pterm"
+	"github.com/spf13/cobra"
 )
 
 var generateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: `Generate a "Hello World" Yaak plugin`,
 	Run: func(cmd *cobra.Command, args []string) {
-		defaultName := RandomName()
-		defaultPath := "./" + defaultName
+		pluginName, err := pterm.DefaultInteractiveTextInput.WithDefaultText("Plugin name").WithDefaultValue(RandomName()).Show()
+		CheckError(err)
 
-		_ = defaultPath
-
-		pluginDir, err := pterm.DefaultInteractiveTextInput.WithDefaultValue(defaultPath).Show()
+		pluginDir, err := pterm.DefaultInteractiveTextInput.WithDefaultText("Plugin dir").WithDefaultValue("./" + pluginName).Show()
 		CheckError(err)
 
 		if fileExists(pluginDir) {
@@ -29,10 +28,10 @@ var generateCmd = &cobra.Command{
 		CheckError(os.MkdirAll(pluginDir, 0755))
 
 		// Copy static files
-		copyFile("package.json", pluginDir, defaultName)
-		copyFile("tsconfig.json", pluginDir, defaultName)
-		copyFile("src/index.ts", pluginDir, defaultName)
-		copyFile("src/index.test.ts", pluginDir, defaultName)
+		copyFile("package.json", pluginDir, pluginName)
+		copyFile("tsconfig.json", pluginDir, pluginName)
+		copyFile("src/index.ts", pluginDir, pluginName)
+		copyFile("src/index.test.ts", pluginDir, pluginName)
 
 		primary := pterm.NewStyle(pterm.FgLightWhite, pterm.BgMagenta, pterm.Bold)
 

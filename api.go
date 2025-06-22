@@ -33,6 +33,7 @@ func SendAPIRequest(r *http.Request) []byte {
 	client := &http.Client{Timeout: 10 * time.Second}
 	resp, err := client.Do(r)
 	CheckError(err)
+	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	CheckError(err)

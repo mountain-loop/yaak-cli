@@ -2,12 +2,13 @@ package yaakcli
 
 import (
 	"archive/zip"
-	"fmt"
+	"encoding/json"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 	"io"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 var publishCmd = &cobra.Command{
@@ -15,6 +16,8 @@ var publishCmd = &cobra.Command{
 	Short: "Publish a Yaak plugin version to the plugin registry",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		spinner, _ := pterm.DefaultSpinner.WithDelay(1 * time.Second).Start("Publishing plugin...")
+
 		pluginDir, err := os.Getwd()
 		CheckError(err)
 
@@ -43,7 +46,7 @@ var publishCmd = &cobra.Command{
 			}
 		}
 
-		pterm.Info.Println("Creating zip file ", pluginDir)
+		spinner.UpdateText("Archiving plugin")
 
 		go func() {
 			defer func() {
@@ -90,12 +93,18 @@ var publishCmd = &cobra.Command{
 				return err
 			})
 			CheckError(err)
-			pterm.Info.Println("Zip file created")
 		}()
 
+		spinner.UpdateText("Uploading plugin")
 		req := NewAPIRequest("POST", "/plugins/publish", zipPipeReader)
 		body := SendAPIRequest(req)
-		pterm.Success.Println("Plugin published")
-		fmt.Printf("%s\n", body)
+
+		var response struct {
+			Version string `json:"version"`
+			URL     string `json:"url"`
+		}
+
+		CheckError(json.Unmarshal(body, &response))
+		spinner.Success("Plugin published ", response.Version, "\n → ", response.URL)
 	},
 }

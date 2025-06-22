@@ -36,10 +36,6 @@ var loginCmd = &cobra.Command{
 		// Create a channel to receive the auth token
 		tokenChan := make(chan string, 1)
 
-		// Create a context that we can cancel
-		_, cancel := context.WithCancel(context.Background())
-		defer cancel()
-
 		// Set up a simple HTTP server to handle the OAuth callback
 		server := &http.Server{
 			Addr: "localhost:8085",

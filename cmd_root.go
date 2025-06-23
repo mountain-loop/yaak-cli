@@ -23,8 +23,12 @@ func rootCmd(version string) *cobra.Command {
 	cmd.AddCommand(devCmd)
 	cmd.AddCommand(buildCmd)
 	cmd.AddCommand(generateCmd)
+	cmd.AddCommand(whoamiCmd)
+	cmd.AddCommand(loginCmd)
+	cmd.AddCommand(logoutCmd)
+	cmd.AddCommand(publishCmd)
 
-	cmd.Flags().BoolVar(&fVersion, "version", false, "Source directory to read from")
+	cmd.Flags().BoolVar(&fVersion, "version", false, "Show the current version of the Yaak CLI")
 
 	return cmd
 }

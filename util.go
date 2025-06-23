@@ -29,3 +29,13 @@ func fileExists(path string) bool {
 	}
 	return true
 }
+
+func prodStagingDevStr(prod, staging, dev string) string {
+	if os.Getenv("ENVIRONMENT") == "staging" {
+		return staging
+	} else if os.Getenv("ENVIRONMENT") == "development" {
+		return dev
+	} else {
+		return prod
+	}
+}

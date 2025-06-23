@@ -16,8 +16,6 @@ var publishCmd = &cobra.Command{
 	Short: "Publish a Yaak plugin version to the plugin registry",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		pterm.Info.Println("Building plugin...")
-
 		pluginDir, err := os.Getwd()
 		CheckError(err)
 

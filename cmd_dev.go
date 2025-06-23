@@ -5,6 +5,7 @@ import (
 	"github.com/evanw/esbuild/pkg/api"
 	"github.com/spf13/cobra"
 	"os"
+	"path/filepath"
 )
 
 var devCmd = &cobra.Command{
@@ -16,16 +17,23 @@ var devCmd = &cobra.Command{
 			ExitError("./package.json does not exist. Ensure that you are in a plugin directory?")
 		}
 
-		srcPath := "./src/index.ts"
-		ctx, errors := api.Context(ESLintBuildOptions([]string{srcPath}))
+		pluginDir, err := os.Getwd()
+		CheckError(err)
+
+		if len(args) > 0 {
+			pluginDir, err = filepath.Abs(args[0])
+			CheckError(err)
+		}
+
+		fmt.Printf("Watching %s...\n", pluginDir)
+
+		ctx, errors := api.Context(ESLintBuildOptions(pluginDir))
 		if errors != nil {
 			println("Failed to create esbuild context")
 			os.Exit(1)
 		}
 
-		fmt.Printf("Watching %s...\n", srcPath)
-
-		err := ctx.Watch(api.WatchOptions{})
+		err = ctx.Watch(api.WatchOptions{})
 		CheckError(err)
 
 		// Returning from main() exits immediately in Go.

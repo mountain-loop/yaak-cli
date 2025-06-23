@@ -16,7 +16,7 @@ var publishCmd = &cobra.Command{
 	Short: "Publish a Yaak plugin version to the plugin registry",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		spinner, _ := pterm.DefaultSpinner.WithDelay(1 * time.Second).Start("Publishing plugin...")
+		pterm.Info.Println("Building plugin...")
 
 		pluginDir, err := os.Getwd()
 		CheckError(err)
@@ -25,6 +25,10 @@ var publishCmd = &cobra.Command{
 			pluginDir, err = filepath.Abs(args[0])
 			CheckError(err)
 		}
+
+		BuildPlugin(pluginDir)
+
+		spinner, _ := pterm.DefaultSpinner.WithDelay(1 * time.Second).Start("Publishing plugin...")
 
 		zipPipeReader, zipPipeWriter := io.Pipe()
 

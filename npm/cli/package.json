@@ -7,7 +7,8 @@
     "url": "git+https://github.com/mountain-loop/yaak-cli.git"
   },
   "scripts": {
-    "postinstall": "node ./install.js"
+    "postinstall": "node ./install.js",
+    "prepublishOnly": "node ./prepublish.js"
   },
   "bin": {
     "yaakcli": "bin/cli.js"

@@ -11,6 +11,6 @@ var whoamiCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		req := NewAPIRequest("GET", "/whoami", nil)
 		body := SendAPIRequest(req)
-		pterm.Info.Printf("%s\n", body)
+		pterm.Success.Printf("%s\n", body)
 	},
 }

@@ -1,6 +1,7 @@
 package yaakcli
 
 import (
+	"encoding/json"
 	"github.com/pterm/pterm"
 	"io"
 	"net/http"
@@ -33,15 +34,28 @@ func SendAPIRequest(r *http.Request) []byte {
 	client := &http.Client{Timeout: 10 * time.Second}
 	resp, err := client.Do(r)
 	CheckError(err)
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		CheckError(Body.Close())
+	}(resp.Body)
 
 	body, err := io.ReadAll(resp.Body)
 	CheckError(err)
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		pterm.Error.Printf("API %d → %s\n", resp.StatusCode, body)
+		var apiErr APIError
+		err = json.Unmarshal(body, &apiErr)
+		if err != nil {
+			pterm.Error.Printf("API Error %d → %s\n", resp.StatusCode, body)
+		} else {
+			pterm.Error.Println(apiErr.Message)
+		}
 		os.Exit(1)
 	}
 
 	return body
+}
+
+type APIError struct {
+	Error   string `json:"error"`
+	Message string `json:"message"`
 }

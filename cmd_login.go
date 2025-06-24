@@ -35,8 +35,8 @@ var loginCmd = &cobra.Command{
 
 		// Open the browser to the login page
 		oauthConfig := oauth2.Config{
-			ClientID:     "yaak-cli",
-			ClientSecret: "",
+			ClientID:     "a1fe44800c2d7e803cad1b4bf07a291c",
+			ClientSecret: "", // Not needed for PKCE
 			Endpoint: oauth2.Endpoint{
 				AuthURL:  baseURL + "/login/oauth/authorize",
 				TokenURL: baseURL + "/login/oauth/access_token",

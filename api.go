@@ -2,6 +2,7 @@ package yaakcli
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/pterm/pterm"
 	"io"
 	"net/http"
@@ -30,6 +31,7 @@ func SendAPIRequest(r *http.Request) []byte {
 	}
 
 	r.Header.Set("X-Yaak-Session", token)
+	r.Header.Set("User-Agent", fmt.Sprintf("YaakCli/%s (%s)", CLIVersion, GetUAPlatform()))
 
 	client := &http.Client{Timeout: 10 * time.Second}
 	resp, err := client.Do(r)
@@ -50,6 +52,11 @@ func SendAPIRequest(r *http.Request) []byte {
 			pterm.Error.Println(apiErr.Message)
 		}
 		os.Exit(1)
+	}
+
+	message := resp.Header.Get("X-Cli-Message")
+	if message != "" {
+		pterm.Info.Printf(message)
 	}
 
 	return body

@@ -3,6 +3,7 @@ package yaakcli
 import (
 	"os"
 	"path"
+	"runtime"
 	"strings"
 )
 
@@ -37,5 +38,18 @@ func prodStagingDevStr(prod, staging, dev string) string {
 		return dev
 	} else {
 		return prod
+	}
+}
+
+func GetUAPlatform() string {
+	switch runtime.GOOS {
+	case "windows":
+		return "Win"
+	case "darwin":
+		return "Mac"
+	case "linux":
+		return "Linux"
+	default:
+		return "Unknown"
 	}
 }

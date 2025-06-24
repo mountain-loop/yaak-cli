@@ -5,7 +5,10 @@ import (
 	"os"
 )
 
-func rootCmd(version string) *cobra.Command {
+var CLIVersion string
+
+func rootCmd(v string) *cobra.Command {
+	CLIVersion = v
 	var fVersion bool
 	cmd := &cobra.Command{
 		Use:   "yaakcli",
@@ -13,7 +16,7 @@ func rootCmd(version string) *cobra.Command {
 		Long:  "Generate, build, and debug plugins for Yaak, the most intuitive desktop API client",
 		Run: func(cmd *cobra.Command, args []string) {
 			if fVersion {
-				println(version)
+				println(CLIVersion)
 				os.Exit(0)
 			}
 

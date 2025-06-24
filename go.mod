@@ -10,6 +10,7 @@ require (
 	github.com/pterm/pterm v0.12.81
 	github.com/spf13/cobra v1.8.1
 	github.com/zalando/go-keyring v0.2.6
+	golang.org/x/oauth2 v0.30.0
 )
 
 require (

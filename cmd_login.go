@@ -2,12 +2,14 @@ package yaakcli
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/pkg/browser"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
+	"golang.org/x/oauth2"
+	"net"
 	"net/http"
-	"net/url"
 	"os"
 	"os/signal"
 	"time"
@@ -19,10 +21,68 @@ var loginCmd = &cobra.Command{
 	Long:  "Open a web browser to authenticate with Yaak. Works with all browsers including Safari.",
 	Run: func(cmd *cobra.Command, args []string) {
 		CheckError(deleteAuthToken())
+		baseURL := prodStagingDevStr("https://yaak.app", "https://todo.yaak.app", "http://localhost:9444")
 
-		pterm.Info.Println("Starting browser-based login...")
+		// Create a channel to receive the auth token
+		tokenChan := make(chan string, 1)
 
-		// Save the token to a config file
+		// Set up a simple HTTP server to handle the OAuth callback
+		listener, err := net.Listen("tcp", "127.0.0.1:0")
+		CheckError(err)
+
+		addr := listener.Addr().(*net.TCPAddr)
+		redirectURL := fmt.Sprintf("http://127.0.0.1:%d/oauth/callback", addr.Port)
+
+		// Open the browser to the login page
+		oauthConfig := oauth2.Config{
+			ClientID:     "yaak-cli",
+			ClientSecret: "",
+			Endpoint: oauth2.Endpoint{
+				AuthURL:  baseURL + "/login/oauth/authorize",
+				TokenURL: baseURL + "/login/oauth/access_token",
+			},
+			RedirectURL: redirectURL,
+			Scopes:      nil,
+		}
+		loginURL, err := AuthorizationURL(&oauthConfig)
+		CheckError(err)
+
+		mux := http.NewServeMux()
+
+		mux.HandleFunc("/oauth/callback", func(w http.ResponseWriter, r *http.Request) {
+			h := OAuthRedirectHandler{
+				State:        loginURL.State,
+				CodeVerifier: loginURL.CodeVerifier,
+				OAuthConfig:  &oauthConfig,
+			}
+			token, err := h.ExchangeCode(r)
+			// Get the token from the query parameters
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				_, _ = fmt.Fprintf(w, "Failed to get access token: %s", err.Error())
+				return
+			}
+
+			// Send the token to the channel
+			tokenChan <- token
+
+			// Return a success message to the browser
+			redirectTo := baseURL + "/login/oauth/success"
+			http.Redirect(w, r, redirectTo, http.StatusFound)
+		})
+
+		server := &http.Server{Handler: mux}
+
+		// Start the server in a goroutine
+		go func() {
+			if err := server.Serve(listener); !errors.Is(err, http.ErrServerClosed) {
+				pterm.Error.Printf("HTTP server error: %v\n", err)
+				os.Exit(1)
+			}
+		}()
+
+		pterm.Info.Println("Initiating login to", loginURL)
+
 		confirm := pterm.DefaultInteractiveConfirm
 		confirm.DefaultValue = true
 		open, err := confirm.Show("Open default browser")
@@ -33,58 +93,12 @@ var loginCmd = &cobra.Command{
 			return
 		}
 
-		// Create a channel to receive the auth token
-		tokenChan := make(chan string, 1)
-
-		// Set up a simple HTTP server to handle the OAuth callback
-		server := &http.Server{
-			Addr: "localhost:8085",
-		}
-
-		// Define the handler for the callback
-		http.HandleFunc("/oauth/callback", func(w http.ResponseWriter, r *http.Request) {
-			// Get the token from the query parameters
-			token := r.URL.Query().Get("token")
-			if token == "" {
-				w.WriteHeader(http.StatusBadRequest)
-				_, _ = fmt.Fprintf(w, "Error: No token provided")
-				return
-			}
-
-			// Send the token to the channel
-			tokenChan <- token
-
-			// Return a success message to the browser
-			redirectTo := prodStagingDevStr(
-				"https://yaak.app/login-cli/success",
-				"https://todo.yaak.app/login-cli/success",
-				"http://localhost:9444/login-cli/success",
-			)
-			http.Redirect(w, r, redirectTo, http.StatusFound)
-		})
-
-		// Start the server in a goroutine
-		go func() {
-			if err := server.ListenAndServe(); err != http.ErrServerClosed {
-				pterm.Error.Printf("HTTP server error: %v\n", err)
-				os.Exit(1)
-			}
-		}()
-
 		// Set up a signal handler to gracefully shut down the server
 		sigChan := make(chan os.Signal, 1)
 		signal.Notify(sigChan, os.Interrupt)
 
-		// Open the browser to the login page
-		redirect := "http://localhost:8085/oauth/callback"
-		loginURL := prodStagingDevStr(
-			"https://yaak.app/login-cli?redirect=",
-			"https://todo.yaak.app/login-cli?redirect=",
-			"http://localhost:9444/login-cli?redirect=",
-		) + url.QueryEscape(redirect)
-
 		// Open the browser based on the operating system
-		err = browser.OpenURL(loginURL)
+		err = browser.OpenURL(loginURL.String())
 		if err != nil {
 			pterm.Error.Printf("Failed to open browser: %v\n", err)
 			pterm.Info.Println("Please open the following URL manually:")

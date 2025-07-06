@@ -33,8 +33,8 @@ var publishCmd = &cobra.Command{
 		zipWriter := zip.NewWriter(zipPipeWriter)
 
 		selected := make(map[string]bool)
-		optionalFiles := []string{"README.md"}
-		requiredFiles := []string{"package.json", "package-lock.json", "build/index.js"}
+		optionalFiles := []string{"README.md", "package-lock.json"}
+		requiredFiles := []string{"package.json", "build/index.js"}
 		for _, name := range optionalFiles {
 			selected[filepath.Clean(name)] = true
 		}

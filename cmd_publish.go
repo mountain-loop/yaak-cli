@@ -36,11 +36,11 @@ var publishCmd = &cobra.Command{
 		optionalFiles := []string{"README.md", "package-lock.json"}
 		requiredFiles := []string{"package.json", "build/index.js"}
 		for _, name := range optionalFiles {
-			selected[filepath.Clean(name)] = true
+			selected[filepath.ToSlash(filepath.Clean(name))] = true
 		}
 
 		for _, name := range requiredFiles {
-			selected[filepath.Clean(name)] = true
+			selected[filepath.ToSlash(filepath.Clean(name))] = true
 			_, err := os.Stat(filepath.Join(pluginDir, name))
 			if err != nil {
 				pterm.Warning.Printf("Missing required file: %s\n", name)
@@ -70,7 +70,7 @@ var publishCmd = &cobra.Command{
 					return err
 				}
 
-				relPath = filepath.ToSlash(relPath) // Normalize for zip entries
+				relPath = filepath.ToSlash(filepath.Clean(relPath)) // Normalize for zip entries
 
 				if !selected[relPath] {
 					return nil

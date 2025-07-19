@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -33,8 +34,8 @@ var publishCmd = &cobra.Command{
 		zipWriter := zip.NewWriter(zipPipeWriter)
 
 		selected := make(map[string]bool)
-		optionalFiles := []string{"README.md", "package-lock.json"}
-		requiredFiles := []string{"package.json", "build/index.js"}
+		optionalFiles := []string{"package-lock.json"}
+		requiredFiles := []string{"README.md", "package.json", "build/index.js", "src/index.ts"}
 		for _, name := range optionalFiles {
 			selected[filepath.ToSlash(filepath.Clean(name))] = true
 		}
@@ -72,7 +73,8 @@ var publishCmd = &cobra.Command{
 
 				relPath = filepath.ToSlash(filepath.Clean(relPath)) // Normalize for zip entries
 
-				if !selected[relPath] {
+				// Skip non-desired files or files not in src/ or build/ (we want those)
+				if !strings.HasPrefix(relPath, "src/") && !strings.HasPrefix(relPath, "build/") && !selected[relPath] {
 					return nil
 				}
 

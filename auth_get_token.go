@@ -1,6 +1,7 @@
 package yaakcli
 
 import (
+	"context"
 	"crypto/subtle"
 	"fmt"
 	"golang.org/x/oauth2"
@@ -25,11 +26,9 @@ func (h *OAuthRedirectHandler) ExchangeCode(r *http.Request) (string, error) {
 		return "", fmt.Errorf("missing code")
 	}
 
-	token, err := h.OAuthConfig.Exchange(
-		r.Context(),
-		code,
-		oauth2.VerifierOption(h.CodeVerifier),
-	)
+	ctx := context.WithValue(r.Context(), oauth2.HTTPClient, &YaakHttpClient)
+
+	token, err := h.OAuthConfig.Exchange(ctx, code, oauth2.VerifierOption(h.CodeVerifier))
 	if err != nil {
 		return "", fmt.Errorf("could not exchange code for token: %w", err)
 	}

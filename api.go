@@ -20,6 +20,17 @@ func NewAPIRequest(method, path string, body io.Reader) *http.Request {
 	return req
 }
 
+var YaakHttpClient = http.Client{Timeout: 10 * time.Second, Transport: &yaakTransport{base: http.DefaultTransport}}
+
+type yaakTransport struct {
+	base http.RoundTripper
+}
+
+func (t *yaakTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	r.Header.Set("User-Agent", fmt.Sprintf("YaakCli/%s (%s)", CLIVersion, GetUAPlatform()))
+	return t.base.RoundTrip(r)
+}
+
 func SendAPIRequest(r *http.Request) []byte {
 	found, token, err := getAuthToken()
 	if err != nil {
@@ -33,9 +44,9 @@ func SendAPIRequest(r *http.Request) []byte {
 	r.Header.Set("X-Yaak-Session", token)
 	r.Header.Set("User-Agent", fmt.Sprintf("YaakCli/%s (%s)", CLIVersion, GetUAPlatform()))
 
-	client := &http.Client{Timeout: 10 * time.Second}
-	resp, err := client.Do(r)
+	resp, err := YaakHttpClient.Do(r)
 	CheckError(err)
+
 	defer func(Body io.ReadCloser) {
 		CheckError(Body.Close())
 	}(resp.Body)

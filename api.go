@@ -3,11 +3,12 @@ package yaakcli
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/pterm/pterm"
 	"io"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/pterm/pterm"
 )
 
 func NewAPIRequest(method, path string, body io.Reader) *http.Request {

@@ -28,6 +28,7 @@ var generateCmd = &cobra.Command{
 		CheckError(os.MkdirAll(pluginDir, 0755))
 
 		// Copy static files
+		copyFile(".gitignore", pluginDir, pluginName)
 		copyFile("package.json", pluginDir, pluginName)
 		copyFile("tsconfig.json", pluginDir, pluginName)
 		copyFile("src/index.ts", pluginDir, pluginName)

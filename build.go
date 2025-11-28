@@ -1,9 +1,10 @@
 package yaakcli
 
 import (
+	"path/filepath"
+
 	"github.com/evanw/esbuild/pkg/api"
 	"github.com/pterm/pterm"
-	"path/filepath"
 )
 
 func ESLintBuildOptions(pluginDir string) api.BuildOptions {

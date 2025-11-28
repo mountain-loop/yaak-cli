@@ -5,6 +5,7 @@ const BINARY_DISTRIBUTION_PACKAGES = {
   linux_arm64: "@yaakapp/cli-linux-arm64",
   linux_x64: "@yaakapp/cli-linux-x64",
   win32_x64: "@yaakapp/cli-win32-x64",
+  win32_arm64: "@yaakapp/cli-win32-arm64",
 };
 
 // Adjust the version you want to install. You can also make this dynamic.

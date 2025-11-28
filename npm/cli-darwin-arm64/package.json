@@ -1,11 +1,14 @@
 {
   "name": "@yaakapp/cli-darwin-arm64",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mountain-loop/yaak-cli.git"
   },
   "os": [
     "darwin"
+  ],
+  "cpu": [
+    "arm64"
   ]
 }

@@ -4,8 +4,9 @@ import (
 	"context"
 	"crypto/subtle"
 	"fmt"
-	"golang.org/x/oauth2"
 	"net/http"
+
+	"golang.org/x/oauth2"
 )
 
 type OAuthRedirectHandler struct {

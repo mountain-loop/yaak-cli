@@ -61,6 +61,11 @@ jobs:
         working-directory: npm/cli-win32-x64
         env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }
 
+      - name: Publish @yaakapp/cli-win32-arm64
+        run: npm publish --provenance --access public
+        working-directory: npm/cli-win32-arm64
+        env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }
+
       - name: Publish @yaakapp/cli
         run: npm publish --provenance --access public
         working-directory: npm/cli

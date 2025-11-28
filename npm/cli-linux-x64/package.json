@@ -1,6 +1,6 @@
 {
   "name": "@yaakapp/cli-linux-x64",
-  "version": "0.0.39",
+  "version": "0.0.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mountain-loop/yaak-cli.git"

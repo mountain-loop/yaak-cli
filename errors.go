@@ -2,8 +2,9 @@ package yaakcli
 
 import (
 	"fmt"
-	"github.com/pterm/pterm"
 	"os"
+
+	"github.com/pterm/pterm"
 )
 
 func CheckError(err error) {

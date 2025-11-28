@@ -1,6 +1,7 @@
 package yaakcli
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 
@@ -19,7 +20,7 @@ var generateCmd = &cobra.Command{
 		CheckError(err)
 
 		if fileExists(pluginDir) {
-			returnError("")
+			CheckError(fmt.Errorf("plugin directory %s already exists", pluginDir))
 		}
 
 		pterm.Println("Generating plugin to:", pterm.Magenta(pluginDir))
@@ -51,8 +52,4 @@ func runCmd(dir, cmd string, args ...string) {
 	c.Stderr = os.Stderr
 	CheckError(c.Start())
 	CheckError(c.Wait())
-}
-
-func returnError(msg string) {
-	pterm.Println(pterm.Red(msg))
 }

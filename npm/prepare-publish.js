@@ -2,12 +2,12 @@ const {copyFileSync, readFileSync, writeFileSync} = require("node:fs");
 const {join} = require("node:path");
 
 console.log("Copying binary files to packages")
-copyFileSync(join(__dirname, '../dist/yaak-cli_darwin_arm64/yaakcli'), join(__dirname, 'cli-darwin-arm64/bin/yaakcli'));
-copyFileSync(join(__dirname, '../dist/yaak-cli_darwin_amd64/yaakcli'), join(__dirname, 'cli-darwin-x64/bin/yaakcli'));
-copyFileSync(join(__dirname, '../dist/yaak-cli_linux_arm64/yaakcli'), join(__dirname, 'cli-linux-arm64/bin/yaakcli'));
-copyFileSync(join(__dirname, '../dist/yaak-cli_linux_amd64/yaakcli'), join(__dirname, 'cli-linux-x64/bin/yaakcli'));
-copyFileSync(join(__dirname, '../dist/yaak-cli_windows_amd64/yaakcli.exe'), join(__dirname, 'cli-win32-x64/bin/yaakcli.exe'));
-copyFileSync(join(__dirname, '../dist/yaak-cli_windows_arm64/yaakcli.exe'), join(__dirname, 'cli-win32-arm64/bin/yaakcli.exe'));
+copyFileSync(join(__dirname, '../dist/yaak-cli_darwin_arm64_v8.0/yaakcli'), join(__dirname, 'cli-darwin-arm64/bin/yaakcli'));
+copyFileSync(join(__dirname, '../dist/yaak-cli_darwin_amd64_v1/yaakcli'), join(__dirname, 'cli-darwin-x64/bin/yaakcli'));
+copyFileSync(join(__dirname, '../dist/yaak-cli_linux_arm64_v8.0/yaakcli'), join(__dirname, 'cli-linux-arm64/bin/yaakcli'));
+copyFileSync(join(__dirname, '../dist/yaak-cli_linux_amd64_v1/yaakcli'), join(__dirname, 'cli-linux-x64/bin/yaakcli'));
+copyFileSync(join(__dirname, '../dist/yaak-cli_windows_amd64_v1/yaakcli.exe'), join(__dirname, 'cli-win32-x64/bin/yaakcli.exe'));
+copyFileSync(join(__dirname, '../dist/yaak-cli_windows_arm64_v8.0/yaakcli.exe'), join(__dirname, 'cli-win32-arm64/bin/yaakcli.exe'));
 
 const version = process.env.YAAK_CLI_VERSION?.replace('v', '');
 if (!version) {
